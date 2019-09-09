@@ -140,6 +140,8 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
     double dx;
     double dy;
     double cx1,cy1,h1,w1,r1,cx2,cy2,h2,w2,r2;
+    double xMaior = x, xMenor = x, yMaior = y, yMenor = y;
+    double dis1,dis2;
     //double raios;
     char nomesvg[]=".svg"; 
     char *nomeqry;
@@ -195,37 +197,30 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
              if(!imprimido){
                 imprimiSvg(listPre,listFig,listQua,listRad,listHid,listSem,listMuro,arq3);
                 imprimido=1;
-
-                //vetSe=malloc(sizeof(Forma *)*length(listSem));
                 preencheVet(listSem,vetSe);
-                
-                //vetHid=malloc(sizeof(Forma *)*length(listHid));
                 preencheVet(listHid,vetHid);
             }
             
-            //printf("\nentrooou\n");
+            
             if(strcmp("brl",letra)==0){
-                //TERMINAR H DOS SEGMENTOS
-
                 fscanf(arq,"%lf %lf",&x,&y);
+                imprimiCirculo(arq3,x,y,3,"red","yellow");
                 int valorTamanho = (getOcupados(listPre)*4 + 2*getOcupados(listMuro));
-                //printf("\n%d\n",valorTamanho);
-                //novo para testes
                 Ponto vetorPontos[valorTamanho];
                 Segmento vetorSegmentos[valorTamanho*3];
-                float xAux,yAux;
+                double xAux,yAux;
                 int j = 0;
                 k = 0;
-                float xMaior = x, xMenor = x, yMaior = y, yMenor = y;
+                
                 //pegando maior ponto
                 proxQuad=getFirst(listQua);
                 qua=getItem(listQua,proxQuad);
                 while(proxQuad!=-1){
                     
-                    float xAux1 = getQuadraX(qua);
-                    float yAux1 = getQuadraY(qua);
-                    float xAux2 = getQuadraX(qua) + getQuadraW(qua);
-                    float yAux2 = getQuadraY(qua) + getQuadraH(qua);
+                    double xAux1 = getQuadraX(qua);
+                    double yAux1 = getQuadraY(qua);
+                    double xAux2 = getQuadraX(qua) + getQuadraW(qua);
+                    double yAux2 = getQuadraY(qua) + getQuadraH(qua);
                     if(xAux2 > xMaior){
                             xMaior = xAux2;
                         }
@@ -246,10 +241,10 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
                 mu=getItem(listMuro,proxMuro);
                 while(proxMuro!=-1){
                     
-                    float xAux1 = getMuroX1(mu);
-                    float yAux1 = getMuroY1(mu);
-                    float xAux2 = getMuroX2(mu);
-                    float yAux2 = getMuroY2(mu);
+                    double xAux1 = getMuroX1(mu);
+                    double yAux1 = getMuroY1(mu);
+                    double xAux2 = getMuroX2(mu);
+                    double yAux2 = getMuroY2(mu);
                     if(xAux2 > xMaior){
                             xMaior = xAux2;
                         }
@@ -270,9 +265,7 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
                 yMaior = yMaior + 100;
                 xMenor = xMenor - 100;
                 yMenor = yMenor - 100;
-                imprimiRetangulo(arq3,xMenor,yMenor,yMaior-yMenor,xMaior-xMenor, "black","none");
-                //printf("xMaior=%lf,%lf,%lf,%lf\n",xMaior,yMaior,xMenor,yMenor);
-                
+                imprimiRetangulo(arq3,xMenor,yMenor,yMaior-yMenor,xMaior-xMenor, "black","none");                
                 //adicionando pontos retangulo fora
                 //ponto cima esquerda
                 pto1=definePonto(xMenor,yMenor);
@@ -308,6 +301,7 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
                 seg=defineSegmento(pto3,pto1);
                 vetorSegmentos[q]=seg;
                 q++;
+
                 proxPre=getFirst(listPre);
                 predio=getItem(listPre,proxPre);
 
@@ -344,15 +338,15 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
                         seg=defineSegmento(pto1,pto2);
                         vetorSegmentos[q]=seg;
                         q++;
-
-                        seg=defineSegmento(pto3,pto2);
+                        //
+                        seg=defineSegmento(pto3,pto1);
                         vetorSegmentos[q]=seg;
                         q++;
-
+                        //inferior
                         seg=defineSegmento(pto4,pto3);
                         vetorSegmentos[q]=seg;
                         q++;
-
+                        //segmento direita
                         seg=defineSegmento(pto4,pto1);
                         vetorSegmentos[q]=seg;
                         q++;
@@ -372,74 +366,88 @@ void leituraQry(char pathqry[], char pathsaida[],char sufixogeo[],char sufixoqry
                         q++;
                         j++;
                     }
-                    //printf("\nj -> %d",j);
                     proxPre=getProx(listPre,proxPre);
                     predio=getItem(listPre,proxPre);
 
                     proxMuro=getProx(listMuro,proxMuro);
                     mu=getItem(listMuro,proxMuro);
                 }
-                //printf("\n*j -> %d",j);
                 k = j/4;
-                
-                //int tamPontos = j;
                 int tamSegmentos = q;
                 pto2=definePonto(x,y);
-                pto1=definePonto(getPontoX(vetorPontos[1])+50,y);
-                //imprimiLinha(x,y,getPontoX(vetorPontos[1])+50,y,arq3);
-                //printf("%lf,%lf,%lf,%lf\n",getPontoX(pto2),getPontoY(pto2),getPontoX(pto1),getPontoY(pto1));               
-                
-
-                
-                
-
-                for(int i = 0; i < tamSegmentos;i++){
-                    pto1=getSegmentoIni(vetorSegmentos[i]);
-                    pto2=getSegmentoFim(vetorSegmentos[i]);
-                    int e = lado(x,y,getPontoX(pto2),getPontoY(pto2),getPontoX(pto3),getPontoY(pto3));
-                    if(e==1){
-                        trocaPontos(vetorSegmentos[i]);
+                pto1=definePonto(getPontoX(vetorPontos[1])+50.0,y);
+                fprintf(arq3,"<polygon points=\"");
+                //superior
+                for(double g=xMenor;g<xMaior;g++){
+                    pto1=definePonto(g,yMenor);
+                    pto4=definePonto(xMaior,yMenor);
+                     for(int i = 0;i < tamSegmentos;i++){
+                        pto3=NULL;
+                        pto3=pontoIntersecao(pto2,pto1,getSegmentoIni(vetorSegmentos[i]),getSegmentoFim(vetorSegmentos[i]));
+                        if(pto3){
+                            dis1=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto3),getPontoY(pto3));
+                            dis2=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto4),getPontoY(pto4));
+                            if(dis1<dis2){
+                                pto4=definePonto(getPontoX(pto3),getPontoY(pto3));    
+                            }
+                        }
                     }
+                    fprintf(arq3,"%lf,%lf ",getPontoX(pto4),getPontoY(pto4));
                 }
-
-                for(int i = 0;i < tamSegmentos;i++){
-                    pto3=NULL;
-                    pto3=pontoIntersecao(pto2,pto1,getSegmentoIni(vetorSegmentos[i]),getSegmentoFim(vetorSegmentos[i]));
-                    if(i==1){
-                        //imprimiCirculo(arq3,getPontoX(getSegmentoIni(vetorSegmentos[i])),getPontoY(getSegmentoIni(vetorSegmentos[i])),2,"black","cyan");
-                        //imprimiCirculo(arq3,getPontoX(getSegmentoFim(vetorSegmentos[i])),getPontoY(getSegmentoFim(vetorSegmentos[i])),2,"black","red");
+                 //esquerdo
+                for(double g=yMenor;g<yMaior;g++){
+                    pto1=definePonto(xMenor,g);
+                    pto4=definePonto(xMenor,yMaior);
+                     for(int i = 0;i < tamSegmentos;i++){
+                        pto3=NULL;
+                        pto3=pontoIntersecao(pto2,pto1,getSegmentoIni(vetorSegmentos[i]),getSegmentoFim(vetorSegmentos[i]));
+                        if(pto3){
+                            dis1=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto3),getPontoY(pto3));
+                            dis2=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto4),getPontoY(pto4));
+                            if(dis1<dis2){
+                                pto4=definePonto(getPontoX(pto3),getPontoY(pto3));    
+                            }
+                        }
                     }
-                    
-                    if(pto3){
-                        //imprimiLinha(x,y,(getPontoX(getSegmentoIni(vetorSegmentos[i])) + getPontoX(getSegmentoFim(vetorSegmentos[i])))/2,(getPontoY(getSegmentoFim(vetorSegmentos[i])) + getPontoY(getSegmentoIni(vetorSegmentos[i])))/2,arq3);    
-                        
+                    fprintf(arq3,"%lf,%lf ",getPontoX(pto4),getPontoY(pto4));
+                }  
+                 //inferior
+                for(double g=xMenor;g<xMaior;g++){
+                    pto1=definePonto(g,yMaior);
+                    pto4=definePonto(xMenor,yMaior);
+                     for(int i = 0;i < tamSegmentos;i++){
+                        pto3=NULL;                      
+                        pto3=pontoIntersecao(pto2,pto1,getSegmentoIni(vetorSegmentos[i]),getSegmentoFim(vetorSegmentos[i]));
+                        if(pto3){
+                            dis1=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto3),getPontoY(pto3));
+                            dis2=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto4),getPontoY(pto4));
+                            if(dis1<dis2){
+                                pto4=definePonto(getPontoX(pto3),getPontoY(pto3));    
+                            }
+                        }
                     }
+                    fprintf(arq3,"%lf,%lf ",getPontoX(pto4),getPontoY(pto4));
                 }
-
-                for(int i=0;i<tamSegmentos;i++){
-                    pto1=getSegmentoIni(vetorSegmentos[i]);
-                    pto2=getSegmentoFim(vetorSegmentos[i]);
-                    //imprimiCirculo(arq3,getPontoX(pto1),getPontoY(pto1),2,"red","red");
-                    //imprimiCirculo(arq3,getPontoX(pto2),getPontoY(pto2),3,"red","Blue");
-                }
-
-
-                
-
-                // for(int i = 0;i < q;i++){
-                //     printf("\n-----------------------------------------------------");
-                //     printf("\nX Inicio -> %f -- Y Inicio -> %f",getPontoX(getSegmentoIni(vetorSegmentos[i]))
-                //     ,getPontoY(getSegmentoIni(vetorSegmentos[i])));
-                //     printf("\nX Fim -> %f -- Y Fim -> %f",getPontoX(getSegmentoFim(vetorSegmentos[i]))
-                //     ,getPontoY(getSegmentoFim(vetorSegmentos[i])));
-                // }
-                // printf("\n");
-
-                // printf("\nxMaior -> %f / xMenor -> %f / yMaior -> %f / xMenor -> %f",xMaior,xMenor,yMaior,yMenor);
-
-            
-                
-            
+                //direita
+                for(double g=yMaior;g>yMenor;g--){
+                    //printf("%lf ",g);
+                    pto1=definePonto(xMaior,g);
+                    pto4=definePonto(xMaior,yMenor);
+                     for(int i = 0;i < tamSegmentos;i++){
+                        pto3=NULL;                      
+                        pto3=pontoIntersecao(pto2,pto1,getSegmentoIni(vetorSegmentos[i]),getSegmentoFim(vetorSegmentos[i]));
+                        if(pto3){
+                            dis1=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto3),getPontoY(pto3));
+                            dis2=distancia(getPontoX(pto2),getPontoY(pto2),getPontoX(pto4),getPontoY(pto4));
+                            if(dis1<dis2){
+                                pto4=definePonto(getPontoX(pto3),getPontoY(pto3));    
+                            }
+                        }
+                    }
+                    fprintf(arq3,"%lf,%lf ",getPontoX(pto4),getPontoY(pto4));
+                }    
+                fprintf(arq3,"\"  fill=\"lime\" fill-opacity=\"0.5\" />");
+        
             }else if(strcmp("fi",letra)==0){
                 //printf("\nentrooou\n");
             

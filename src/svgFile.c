@@ -18,7 +18,7 @@ void cabecalho(FILE* arq){
 
 //imprimir o rodape do svg
 void rodape(FILE* arq){
-    fprintf(arq,"<svg>");
+    fprintf(arq,"</svg>");
 }
 
 //imprimi retangulo

@@ -145,8 +145,7 @@ void leituraGeo(char pathsaida[],char saidasvg[],FILE *arq,Lista listFig, Lista 
                     y=getQuadraY(qua);
                     w=getQuadraW(qua);
                     h=getQuadraH(qua);
-                    
-                    switch(face){
+                   switch(face){
                         case 'N':
                             imprimiRetangulo(svg,x+num-(f/2),y+h-mrg-p,p,f,"red","black");
                             pre=definePredio(cep,face,num,f,p,mrg,x+num-(f/2),y+h-mrg-p,f,p);

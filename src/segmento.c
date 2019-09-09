@@ -112,12 +112,14 @@ int lado(double x1, double y1, double x2, double y2, double x3, double y3){
 
 double determinante(double x1,double y1, double x2,double y2, double x3,double y3, double x4,double y4){
     double det;
-    printf("%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n",x1,y1,x2,y2,x3,y3,x4,y4);
+    //printf("%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n",x1,y1,x2,y2,x3,y3,x4,y4);
     det = (x4 - x3) * (y2 - y1)  -  (y4 - y3) * (x2 - x1);
-    printf("%lf\n",det);
+   // printf("%lf\n",det);
     if (det == 0.0){
         return 0 ; // não há intersecção
     }
+      //s = ((x4 - x3) * (y3 - y1) - (y4 - y3) * (x3 - x1))/ det ;
+    //t = ((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1))/ det ;
     return det; // há intersecção   
 }
 
@@ -143,9 +145,9 @@ Ponto lineIntersection(Ponto p1, Ponto p2,Ponto p3,Ponto p4){
         
     }else{
         //printf("(%lf,%lf)\n",(b2*c1 - b1*c2)/determinant,(a1*c2 - a2*c1)/determinant);
-        this->x=((getPontoX(p4)-getPontoX(p3))*(getPontoY(p3)-getPontoY(p1))-(getPontoY(p4)-getPontoY(p3))*(getPontoX(p3)-getPontoY(p1)))/determinant;
+        this->x=((getPontoX(p4)-getPontoX(p3))*(getPontoY(p3)-getPontoY(p1))-((getPontoY(p4)-getPontoY(p3))*(getPontoX(p3)-getPontoY(p1))))/determinant;
 
-        this->y=((getPontoX(p2)-getPontoX(p1))*(getPontoY(p3)-getPontoY(p1))-(getPontoY(p2)-getPontoY(p1))*(getPontoX(p3)-getPontoX(p1)))/determinant;
+        this->y=((getPontoX(p2)-getPontoX(p1))*(getPontoY(p3)-getPontoY(p1))-((getPontoY(p2)-getPontoY(p1))*(getPontoX(p3)-getPontoX(p1))))/determinant;
         //this->x = (b2*c1 - b1*c2)/determinant;
         //this->y = (a1*c2 - a2*c1)/determinant;
         
@@ -276,6 +278,7 @@ Ponto pontoIntersecao(Ponto A,Ponto B,Ponto C,Ponto D){
         return NULL;
    
     denom = ((getPontoY(B) - getPontoY(A)) * (getPontoX(D) - getPontoX(C)) - (getPontoY(D) - getPontoY(C)) * (getPontoX(B) - getPontoX(A)));
+   
     if(denom == 0)
         return NULL;
  
@@ -283,7 +286,7 @@ Ponto pontoIntersecao(Ponto A,Ponto B,Ponto C,Ponto D){
     s = (getPontoX(A) * (getPontoY(D)-getPontoY(C)) + getPontoX(C)*(getPontoY(A)-getPontoY(D)) + getPontoX(D)*(getPontoY(C)-getPontoY(A)))/denom;
  
     t = - (getPontoX(A) * (getPontoY(C)-getPontoY(B)) + getPontoX(B)*(getPontoY(A)-getPontoY(C)) + getPontoX(C)*(getPontoY(B)-getPontoY(A)))/denom;
- 
+     //printf("\n%lf %lf\n",s,t);
     if(s>=0 && s<=1 && t>=0 && t<=1){
         return definePonto(getPontoX(A)+s*(getPontoX(B)-getPontoX(A)),getPontoY(A)+s*(getPontoY(B)-getPontoY(A)));
     }else return NULL;
